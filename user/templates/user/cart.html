@@ -1,0 +1,21 @@
+{% extends 'user/base.html' %}
+{% block content %}
+
+
+<div>
+{% for order in orders %}
+    {% for employee in order %}
+
+        <h2>{{emoloyee.name}}</h2>
+        <h2>{{employee.cost}}</h2>
+        <h2>{{employee.rating}}</h2>
+        <h2>{{employee.description}}</h2>
+        <h2>{{employee.image}}</h2>
+        <a href = "{% url 'order' %}">place order</a>
+    {% endfor %}
+{% endfor %}
+
+</div>  
+
+
+{% endblock %}

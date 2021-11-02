@@ -1,0 +1,18 @@
+{% extends 'user/base.html' %}
+{% block content %}
+
+
+<div>
+{% for employee in employees %}
+    <h2>{{employee.name}}</h2>
+    <h2>{{employee.cost}}</h2>
+    <h2>{{employee.rating}}</h2>
+    <h2>{{employee.description}}</h2>
+    <h2>{{employee.image}}</h2>
+    <a href = "{% url 'addcart' emp_pk=employee.id servicepk=servicepk categorypk=categorypk %}">Add</a>
+{% endfor %}
+
+</div>  
+
+
+{% endblock %}
