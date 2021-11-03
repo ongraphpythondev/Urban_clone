@@ -6,8 +6,6 @@ urlpatterns = [
     path('login' , views.login , name = 'login'),
     path('register' , views.register , name = 'register'),
     path('logout' , views.logout , name = 'logout'),
-    path('succes' , views.succes , name = 'succes'),
-    path('error' , views.error , name = 'error'),
     path('verify/<auth_token>' , views.verify , name = 'verify'),
     path('forget_password' , views.forget_password , name = 'forget_password'),
     path('reset_password/<auth_token>' , views.reset_password , name = 'reset_password'),
@@ -16,6 +14,7 @@ urlpatterns = [
     path('service/<int:servicepk>' , views.service , name = 'service'),
     path('addcart/<int:emp_pk>/<int:servicepk>/<int:categorypk>' , views.addcart , name = 'addcart'),
     path('cart' , views.cart , name = 'cart'),
+    path('order/<int:order_pk>' , views.order , name = 'order'),
     path('order' , views.order , name = 'order'),
     
 ]

@@ -1,18 +1,35 @@
 {% extends 'user/base.html' %}
 {% block content %}
+{% load static %}
+
+<h2 class = " d-flex justify-content-center align-items-center">  {{cat}}   <h2>
+
+{% if emp_presint == 0 %}
+    <h2>No employee available</h2>
+
+{% else %}
+<div class="card">
+        <div class="card-block" >
+            <div class="row">
+                {% for employee in employees %}
+                    <div>
+                    <img class="card-img-top" src = "{% static employee.image %}" style="width: 20%; height:10vw;" alt="Card image cap">    
+                    <div>
+                    <h2> Name : {{employee.name}}</h2>
+                    <h2> Price : {{employee.cost}} Rs.</h2>
+                    <h2> Rating : {{employee.rating}} / 5</h2>
+                    <h2> Description : {{employee.description}}</h2>
+                    <button type="button" class="btn btn-primary"> <a href = "{% url 'addcart' emp_pk=employee.id servicepk=servicepk categorypk=categorypk %}" style = "text-decoration: none; color:red" >Add to cart</a> </button>
+                    <br><br>
+                {% endfor %}
+            </div>
+        </div>
+</div>
+{% endif %}
 
 
-<div>
-{% for employee in employees %}
-    <h2>{{employee.name}}</h2>
-    <h2>{{employee.cost}}</h2>
-    <h2>{{employee.rating}}</h2>
-    <h2>{{employee.description}}</h2>
-    <h2>{{employee.image}}</h2>
-    <a href = "{% url 'addcart' emp_pk=employee.id servicepk=servicepk categorypk=categorypk %}">Add</a>
-{% endfor %}
 
-</div>  
+  
 
 
 {% endblock %}

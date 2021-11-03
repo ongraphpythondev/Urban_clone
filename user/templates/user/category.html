@@ -2,11 +2,19 @@
 {% block content %}
 
 
-<div>
-{% for category in categorys %}
-    <h2><a href = "{% url 'order' servicepk=serviceid categorypk=category.id%}">{{category.category}}</a></h2>
-{% endfor %}
-
+<div class="card">
+        <div class="card-header d-flex justify-content-center align-items-center" >
+            Categorys
+        </div>
+        <div class="card-block" >
+            <div class="row">
+                {% for category in categorys %}
+                    <div class="col-md-2  d-flex justify-content-center align-items-center" style="width: 20%; height:10vw; background-color:#c9c9c7;">
+                        <h4><a href = "{% url 'service' servicepk=serviceid categorypk=category.id%}" style ="text-decoration: none;">{{category.category}}</a></h4>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
 </div>
 
 

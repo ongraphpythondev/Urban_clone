@@ -1,21 +1,26 @@
 {% extends 'user/base.html' %}
 {% block content %}
+{% load static %}
+
+<div class="card">
+        <div class="card-block" >
+            <div class="row">
+                {% for employee in employees %}
+                    <div>
+                    <img class="card-img-top" src = "{% static employee.Img %}" style="width: 20%; height:10vw;" alt="Card image cap">    
+                    <div>
+                    <h2> Name : {{employee.Name}}</h2>
+                    <h2> Price : {{employee.cost}} Rs.</h2>
+                    <h2> Rating : {{employee.rating}} / 5</h2>
+                    <h2> Description : {{employee.desc}}</h2>
+                    <button type="button" class="btn btn-primary"> <a href = "{% url 'order' order_pk=employee.dataID %}" style = "text-decoration: none; color:red" >Order</a> </button>
+                    <br><br>
+                {% endfor %}
+            </div>
+        </div>
+</div>
 
 
-<div>
-{% for order in orders %}
-    {% for employee in order %}
-
-        <h2>{{emoloyee.name}}</h2>
-        <h2>{{employee.cost}}</h2>
-        <h2>{{employee.rating}}</h2>
-        <h2>{{employee.description}}</h2>
-        <h2>{{employee.image}}</h2>
-        <a href = "{% url 'order' %}">place order</a>
-    {% endfor %}
-{% endfor %}
-
-</div>  
 
 
 {% endblock %}

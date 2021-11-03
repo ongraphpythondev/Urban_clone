@@ -1,17 +1,43 @@
 {% extends 'user/base.html' %}
 {% block content %}
 
+<html>
+    <head>
+        <style>
+            .center_div{
+                margin: 0 auto;
+                width:50% /* value of your choice which suits your alignment */
+            }
+        </style>
+    </head>
+    <body>
+        <br>
+        <div class="container center_div">
+        <form method = "post">
+        
+            {% csrf_token %}
+            <div class="form-group " >
+                <label for="exampleInputEmail1" >Username</label>
+                <input type="text" class="form-control" name="username" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your name with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-primary" onclick="forgetPassword()">forget password</a></button>
+        </form>
 
-<form method="post">
-{% csrf_token %}
-    <label for="id_email">Username</label>
-    <input type="text" name="username" maxlength="254" id="id_email"><br>
-    <label for="id_password1">Password:</label>
-    <input type="text" name="password" ><br>
-    <input type="submit" value="login">
-</form>
-<a href="{% url 'forget_password' %}">forget password</a>
+    </div>
 
-
+    </body>
+    <script>    
+    function forgetPassword(){
+        location.href = "{% url 'forget_password' %}";
+    }
+    </script>
+</html>
 
 {% endblock %}

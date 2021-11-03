@@ -1,21 +1,25 @@
 {% extends 'user/base.html' %}
 {% block content %}
+{% load static %}
 
 
-<div>
-{% for order in orders %}
-    {% for employee in order %}
+<div class="card">
+        <div class="card-block" >
+            <div class="row">
+                {% for employee in employees %}
+                    <div>
+                    <img class="card-img-top" src = "{% static employee.image %}" style="width: 20%; height:10vw;" alt="Card image cap">    
+                    <div>
+                    <h2> Name : {{employee.name}}</h2>
+                    <h2> Price : {{employee.cost}} Rs.</h2>
+                    <h2> Rating : {{employee.rating}} / 5</h2>
+                    <h2> Description : {{employee.description}}</h2>
+                    <br><br>
+                {% endfor %}
+            </div>
+        </div>
+</div>
 
-        <h2>{{emoloyee.name}}</h2>
-        <h2>{{employee.cost}}</h2>
-        <h2>{{employee.rating}}</h2>
-        <h2>{{employee.description}}</h2>
-        <h2>{{employee.image}}</h2>
-        <a href = "{% url 'order' %}">place order</a>
-    {% endfor %}
-{% endfor %}
-
-</div>  
 
 
 {% endblock %}
