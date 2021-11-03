@@ -32,10 +32,15 @@ def login(req):
             return redirect('/login')
 
         profile_obj = Profile.objects.filter(user = user_obj ).first()
-        # it check the user is email verified or not
-        if not profile_obj.is_verified:
-            messages.success(req, 'Profile is not verified check your mail.')
+        if profile_obj is None:
+            messages.success(req, 'Somethig went wrong try again.')
             return redirect('/login')
+        
+        # it check the user is email verified or not
+        else:
+            if not profile_obj.is_verified:
+                messages.success(req, 'Profile is not verified check your mail.')
+                return redirect('/login')
 
         # it check the username and password 
         user = auth.authenticate(username = username , password = password)
