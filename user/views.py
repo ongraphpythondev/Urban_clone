@@ -240,12 +240,16 @@ def service(req ,servicepk, categorypk = None):
 
 
 @login_required(login_url='/login')
-def addcart(req , emp_pk ,servicepk, categorypk):
+def addcart(req , emp_pk ,servicepk, categorypk = None):
     user_obj = req.user
     choose_obj = Choose.objects.create(user_id = user_obj.id , emp_id= emp_pk , cart = True , )
     choose_obj.save()
     messages.success(req, 'Your service is added to cart .')
-    return redirect(f'/service/{servicepk}/{categorypk}')
+    if categorypk is None:
+        return redirect(f'/service/{servicepk}')
+    else:
+        return redirect(f'/service/{servicepk}/{servicepk}')
+        
 
 
 @login_required(login_url='/login')
@@ -285,17 +289,36 @@ def add_emp(req , servicepk , categorypk = None):
         return render(req, "user/add_employee.html")
 
     if req.method == "POST":
-        if len(req.FILES) != 0:
-            image = req.FILES['image']
-            
+
+        
         cost = req.POST.get('cost')
         description = req.POST.get('description')
+        if len(req.FILES) != 0:
+            image = req.FILES['image']
+        else:
+            messages.success(req, 'please fill your fields')
+            return render(req, 'user/add_employee.html')
+
+        if len(cost) == 0 or len(description) == 0:
+            messages.success(req, 'please fill your fields')
+            return render(req, 'user/add_employee.html')
 
         user_obj = req.user
         user_id = user_obj.id
         name = user_obj.username
-        print(image)
-        emp_obj = Employee.objects.create(service= servicepk ,name=name,category='AC',cost=cost,description=description,image=image)
-        emp_obj.save()
 
-        return render(req, "user/add_employee.html")
+        ser_obj = Services.objects.filter(pk = servicepk).first()
+        if categorypk is None:
+            
+            emp_obj = Employee.objects.create(service= ser_obj.service ,name=name,category='None',cost=cost,description=description,image=image)
+            emp_obj.save()
+            
+            return redirect(f"/service/{servicepk}")
+
+        else:
+            cat_obj = Categorys.objects.filter(pk = categorypk).first()
+            emp_obj = Employee.objects.create(service= ser_obj.service ,name=name,category=cat_obj.category,cost=cost,description=description,image=image)
+            emp_obj.save()
+            
+            return redirect(f"/service/{servicepk}/{categorypk}")
+        

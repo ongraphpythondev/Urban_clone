@@ -42,7 +42,6 @@ def path_and_rename(path):
             filename = '{}.{}'.format(uuid4().hex, ext)
         # return the whole path to the file
         
-        print(filename)
         return os.path.join(upload_to, filename)
     return path_and_rename_func
 
