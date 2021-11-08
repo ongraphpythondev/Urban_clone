@@ -211,9 +211,6 @@ def reset_password(req , auth_token):
 
 
 def category(req, pk):
-    
-    if req.user.is_authenticated:
-        return redirect('/')
 
     ser_obj = Services.objects.filter(pk = pk).first()
     if not ser_obj.sub_category:
@@ -226,10 +223,6 @@ def category(req, pk):
         
         
 def service(req ,servicepk, categorypk = None):
-    
-    if req.user.is_authenticated:
-        return redirect('/')
-
 
     ser_obj = Services.objects.filter(pk = servicepk).first()
     if categorypk is None:
