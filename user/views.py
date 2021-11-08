@@ -155,26 +155,6 @@ def forget_password(req ):
         except Exception as e:
             print(e)
 
-# def resend_mail(req , email):
-
-#         try:
-#             user_obj = User.objects.filter(email = email).first()
-#             if user_obj is None:
-#                 messages.success(req, 'User not found.')
-#                 return redirect('/forget_password')
-            
-            
-#             profile_obj = Profile.objects.filter(user = user_obj).first()
-#             auth_token = str(uuid.uuid4())
-#             profile_obj.auth_token = auth_token
-#             profile_obj.save()
-#             send_mail_for_reset_password(email , auth_token)    
-#             messages.success(req, 'Email send succesfully check your email.')
-#             return redirect(f"resend_mail/{email}")
-#             return render(req, f"user/check_mail_send.html" , {'email':email})
-
-#         except Exception as e:
-#             print(e)
 
 def send_mail_for_reset_password(email , token):
     subject = 'Your accounts need to reset password'
