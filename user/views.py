@@ -277,10 +277,9 @@ def order(req , order_pk = None):
     return render(req , 'user/order.html' , {'employees' : emplist} )
 
 
+@login_required(login_url='/login')
 def add_emp(req , servicepk , categorypk = None):
 
-    if req.user.is_authenticated:
-        return redirect('/')
 
     if req.method == "GET":
         return render(req, "user/add_employee.html")
