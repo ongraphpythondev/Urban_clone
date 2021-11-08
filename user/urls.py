@@ -8,6 +8,7 @@ urlpatterns = [
     path('logout' , views.logout , name = 'logout'),
     path('verify/<auth_token>' , views.verify , name = 'verify'),
     path('forget_password' , views.forget_password , name = 'forget_password'),
+    # path('forget_password/<str:email>' , views.forget_password , name = 'forget_password'),
     path('reset_password/<auth_token>' , views.reset_password , name = 'reset_password'),
     path('category/<int:pk>' , views.category , name = 'category'),
     path('service/<int:servicepk>/<int:categorypk>' , views.service , name = 'service'),

@@ -17,12 +17,12 @@
         
             {% csrf_token %}
             <div class="form-group " >
-                <label for="exampleInputEmail1" >Email</label>
-                <input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                
+                <h1>Email sended Succesfully to ({{email}}) if you did not received.</h1>
+                <input type = 'hidden' value = {{email}} name = 'email'>
             </div>
             <br>
-            <button type="submit" class="btn btn-primary">Find</button>
+            <button type="submit" class="btn btn-primary">Resend</button>
         </form>
 
     </div>
@@ -30,5 +30,4 @@
     </body>
 
 </html>
-
 {% endblock %}
