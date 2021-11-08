@@ -1,0 +1,42 @@
+{% extends 'user/base.html' %}
+{% block content %}
+
+<html>
+    <head>
+        <style>
+            .center_div{
+                margin: 0 auto;
+                width:50% /* value of your choice which suits your alignment */
+            }
+        </style>
+    </head>
+    <body>
+        <br>
+        <div class="container center_div">
+        <form method = "post" enctype='multipart/form-data'>
+        
+            {% csrf_token %}
+            <div class="form-group " >
+                <label >Image</label>
+                <input type="file" class="form-control" name="image"  aria-describedby="emailHelp" placeholder="Upload Image">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your image with anyone else.</small>
+            </div>
+            <div class="form-group " >
+                <label for="exampleInputEmail1" >Cost</label>
+                <input type="text" class="form-control" name="cost" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter cost in Rs.">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label >Description</label>
+                <input type="text" class="form-control" name="description" placeholder="Enter Description">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Add </a></button>
+        </form>
+
+    </div>
+
+    </body>
+
+
+{% endblock %}

@@ -19,6 +19,9 @@ def home(req):
 
 # login page
 def login(req):
+    if req.user.is_authenticated:
+        return redirect('/')
+
     if req.method == "GET":
         return render(req, "user/login.html")
     elif req.method == "POST":
@@ -57,6 +60,10 @@ def login(req):
 
 # register page
 def register(request):
+    
+    if request.user.is_authenticated:
+        return redirect('/')
+
 
     if request.method == "GET":
         return render(request, "user/register.html")
@@ -131,6 +138,10 @@ def logout(req):
 
 # forget password
 def forget_password(req ):
+    
+    if req.user.is_authenticated:
+        return redirect('/')
+
     if req.method == "GET":
         return render(req, "user/forget_password.html")
 
@@ -164,6 +175,10 @@ def send_mail_for_reset_password(email , token):
     send_mail(subject, message , email_from ,recipient_list )
 
 def reset_password(req , auth_token):
+    
+    if req.user.is_authenticated:
+        return redirect('/')
+
     if req.method == "GET":
         return render(req, "user/reset_password.html")
 
@@ -196,19 +211,26 @@ def reset_password(req , auth_token):
 
 
 def category(req, pk):
+    
+    if req.user.is_authenticated:
+        return redirect('/')
+
     ser_obj = Services.objects.filter(pk = pk).first()
     if not ser_obj.sub_category:
         return redirect(f'/service/{ser_obj.id}')
     
     cat_obj = Categorys.objects.filter(service = ser_obj.service)
-    for i in cat_obj:
-        print(i)
     print(cat_obj)
     return render(req , 'user/category.html' , {"categorys":cat_obj , 'serviceid': ser_obj.id})
-        
+
         
         
 def service(req ,servicepk, categorypk = None):
+    
+    if req.user.is_authenticated:
+        return redirect('/')
+
+
     ser_obj = Services.objects.filter(pk = servicepk).first()
     if categorypk is None:
         emp_obj = Employee.objects.filter(service = ser_obj.service).all()
@@ -216,6 +238,9 @@ def service(req ,servicepk, categorypk = None):
     else:
         cat_obj = Categorys.objects.filter(pk = categorypk).first()
         emp_obj = Employee.objects.filter(category = cat_obj.category).all()
+        for i in emp_obj:
+            print(i)
+        print(cat_obj.category)
         cat = cat_obj.category
     
     return render(req , 'user/service.html' , {'emp_presint': len(emp_obj) ,'cat': cat,  'employees' : emp_obj , 'servicepk':servicepk , 'categorypk' : categorypk})
@@ -249,7 +274,6 @@ def order(req , order_pk = None):
     user_obj = req.user
     emplist = []
     if not order_pk is None:
-        print('this is ////')
         choose_obj = Choose.objects.filter(pk = order_pk ).first()
         choose_obj.cart = False
         choose_obj.save()
@@ -258,3 +282,28 @@ def order(req , order_pk = None):
     for emp in choose_obj:
         emplist.append(Employee.objects.filter(pk = emp.emp_id).first())
     return render(req , 'user/order.html' , {'employees' : emplist} )
+
+
+def add_emp(req , servicepk , categorypk = None):
+
+    if req.user.is_authenticated:
+        return redirect('/')
+
+    if req.method == "GET":
+        return render(req, "user/add_employee.html")
+
+    if req.method == "POST":
+        if len(req.FILES) != 0:
+            image = req.FILES['image']
+            
+        cost = req.POST.get('cost')
+        description = req.POST.get('description')
+
+        user_obj = req.user
+        user_id = user_obj.id
+        name = user_obj.username
+        print(image)
+        emp_obj = Employee.objects.create(service= servicepk ,name=name,category='AC',cost=cost,description=description,image=image)
+        emp_obj.save()
+
+        return render(req, "user/add_employee.html")

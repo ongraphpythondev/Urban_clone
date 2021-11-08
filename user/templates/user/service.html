@@ -4,6 +4,12 @@
 
 <h2 class = " d-flex justify-content-center align-items-center">  {{cat}}   <h2>
 
+{% if categorypk == "None"%}
+    <button type="button" class="btn btn-primary"> <a href = "{% url 'add_emp' servicepk=servicepk categorypk=categorypk %}" style = "text-decoration: none; color:red" >Add as employee</a> </button>
+{% else %}
+    <button type="button" class="btn btn-primary"> <a href = "{% url 'add_emp' servicepk=servicepk %}" style = "text-decoration: none; color:red" >Add as employee</a> </button>
+{% endif %}
+
 {% if emp_presint == 0 %}
     <h2>No employee available</h2>
 
