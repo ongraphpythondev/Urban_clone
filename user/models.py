@@ -11,6 +11,7 @@ class Profile(models.Model):
     auth_token = models.CharField(max_length=100 )
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    address = models.TextField(default = None)
 
     def __str__(self):
         return self.user.username
@@ -46,14 +47,15 @@ def path_and_rename(path):
     return path_and_rename_func
 
 class Employee(models.Model):
-    # user_id = models.CharField(max_length=100 )
+    user_id = models.CharField(max_length=100 , default=None)
     service = models.CharField(max_length=100 )
     name = models.CharField(max_length=100 )
     category = models.CharField(max_length=100 , default=None)
     cost = models.IntegerField(default = 0)
     rating = models.FloatField(default = 4.2)
     description = models.TextField(default = None)
-    image = models.FileField(upload_to = path_and_rename('user/static/user/image'))
+    # address = models.CharField(max_length=100 , default=None)
+    image = models.FileField(upload_to = 'user/static/user/image')
 
 
     def __str__(self):

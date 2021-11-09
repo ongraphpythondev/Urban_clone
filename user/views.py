@@ -72,6 +72,7 @@ def register(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        address = request.POST.get('address')
 
         try:
             # it check username is already taken or not
@@ -89,11 +90,11 @@ def register(request):
             user_obj.set_password(password)
             user_obj.save()
             auth_token = str(uuid.uuid4())
-
+            print('this is user obj')
             # creating profile of user
-            profile_obj = Profile.objects.create(user = user_obj , auth_token = auth_token)
+            profile_obj = Profile.objects.create(user = user_obj , auth_token = auth_token , address=address)
             profile_obj.save()
-
+            print('this is profile obj')
             # send mail to user for authenticate 
             send_mail_after_registration(email , auth_token)
             messages.success(request, 'Email sended to user plese check.')
@@ -274,25 +275,48 @@ def order(req , order_pk = None):
         choose_obj = Choose.objects.filter(pk = order_pk ).first()
         choose_obj.cart = False
         choose_obj.save()
+        messages.success(req, 'Your order is succesfully done .')
 
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = False ).all()
     for emp in choose_obj:
         emplist.append(Employee.objects.filter(pk = emp.emp_id).first())
     return render(req , 'user/order.html' , {'employees' : emplist} )
 
+@login_required(login_url='/login')
+def remove(req , order_pk):
 
+    choose_obj = Choose.objects.filter(pk = order_pk ).first()
+    if choose_obj is None:
+        return redirect('/cart')
+    choose_obj.delete()
+    messages.success(req, 'Your cart is succesfully deleted .')
+
+    emplist = []
+    user_obj = req.user
+    choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = True  ).all()
+    for emp in choose_obj:
+        data=Employee.objects.filter(pk = emp.emp_id).first() 
+        Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id}
+        emplist.append(Disc)
+
+    return render(req , 'user/cart.html' , {'employees' : emplist })
+
+
+
+#  Add_employee page
 @login_required(login_url='/login')
 def add_emp(req , servicepk , categorypk = None):
 
-
+    # get request
     if req.method == "GET":
         return render(req, "user/add_employee.html")
 
     if req.method == "POST":
-
         
         cost = req.POST.get('cost')
         description = req.POST.get('description')
+
+        # condition if file is not uploaded
         if len(req.FILES) != 0:
             image = req.FILES['image']
         else:
@@ -306,19 +330,24 @@ def add_emp(req , servicepk , categorypk = None):
         user_obj = req.user
         user_id = user_obj.id
         name = user_obj.username
-
+        
+        # getting object of service class
         ser_obj = Services.objects.filter(pk = servicepk).first()
+
+        # if there is no category only service
         if categorypk is None:
             
-            emp_obj = Employee.objects.create(service= ser_obj.service ,name=name,category='None',cost=cost,description=description,image=image)
+            emp_obj = Employee.objects.create(user_id=user_id , service= ser_obj.service ,name=name,category='None',cost=cost,description=description,image=image)
             emp_obj.save()
             
+            # redirect to service.html
             return redirect(f"/service/{servicepk}")
 
         else:
             cat_obj = Categorys.objects.filter(pk = categorypk).first()
-            emp_obj = Employee.objects.create(service= ser_obj.service ,name=name,category=cat_obj.category,cost=cost,description=description,image=image)
+            emp_obj = Employee.objects.create(user_id=user_id,service= ser_obj.service ,name=name,category=cat_obj.category,cost=cost,description=description,image=image)
             emp_obj.save()
             
+            # redirect to service.html
             return redirect(f"/service/{servicepk}/{categorypk}")
         

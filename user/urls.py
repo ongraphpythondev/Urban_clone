@@ -16,6 +16,7 @@ urlpatterns = [
     path('cart' , views.cart , name = 'cart'),
     path('order/<int:order_pk>' , views.order , name = 'order'),
     path('order' , views.order , name = 'order'),
+    path('remove/<int:order_pk>' , views.remove , name = 'remove'),
     path('add_emp/<int:servicepk>/<int:categorypk>' , views.add_emp , name = 'add_emp'),
     path('add_emp/<int:servicepk>' , views.add_emp , name = 'add_emp'),
 ]
