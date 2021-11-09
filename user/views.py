@@ -474,11 +474,12 @@ def checkout(req , order_pk = None , user_pk = None ):
         return render(req, 'user/checkout.html' , {'cost':cost , 'user_pk':user_pk , 'address': profile_obj.address})
 
 
+@login_required(login_url='/login')
 def profile(req):
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
-            return redirect('/login')
+        messages.success(req, 'Admin cannot use this functionality please login user account.')
+        return redirect('/login')
 
     return render(req, 'user/profile.html' , {'profile':profile_obj})
