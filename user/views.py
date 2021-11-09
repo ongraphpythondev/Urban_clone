@@ -233,7 +233,6 @@ def service(req ,servicepk, categorypk = None):
         cat_obj = Categorys.objects.filter(pk = categorypk).first()
         emp_obj = Employee.objects.filter(category = cat_obj.category).all()
         cat = cat_obj.category
-    print(emp_obj[0])
 
     emplist = []
     user_obj = req.user
