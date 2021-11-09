@@ -67,11 +67,11 @@ def login(req):
 # register page
 def register(request):
     
-    if req.user.is_authenticated:
-        user_obj = req.user
+    if request.user.is_authenticated:
+        user_obj = request.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
-            auth.logout(req)
+            auth.logout(request)
             return redirect('/')
         return redirect('/')
 
