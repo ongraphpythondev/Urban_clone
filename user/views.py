@@ -19,7 +19,13 @@ def home(req):
 
 # login page
 def login(req):
+
     if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            return redirect('/')
         return redirect('/')
 
     if req.method == "GET":
@@ -36,7 +42,7 @@ def login(req):
 
         profile_obj = Profile.objects.filter(user = user_obj ).first()
         if profile_obj is None:
-            messages.success(req, 'Somethig went wrong try again.')
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
         
         # it check the user is email verified or not
@@ -61,7 +67,12 @@ def login(req):
 # register page
 def register(request):
     
-    if request.user.is_authenticated:
+    if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            return redirect('/')
         return redirect('/')
 
 
@@ -126,7 +137,7 @@ def verify(request , auth_token):
             messages.success(request, 'Your account has been verified.')
             return redirect('/login')
         else:
-            messages.success(request, 'Somethig went wrong please try again.')
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
     except Exception as e:
         print(e)
@@ -141,6 +152,11 @@ def logout(req):
 def forget_password(req ):
     
     if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            return redirect('/')
         return redirect('/')
 
     if req.method == "GET":
@@ -157,6 +173,9 @@ def forget_password(req ):
             
             
             profile_obj = Profile.objects.filter(user = user_obj).first()
+            if profile_obj is None:
+                messages.success(req, 'Admin cannot use this functionality please login user account.')
+                return redirect('/login')
             auth_token = str(uuid.uuid4())
             profile_obj.auth_token = auth_token
             profile_obj.save()
@@ -178,6 +197,11 @@ def send_mail_for_reset_password(email , token):
 def reset_password(req , auth_token):
     
     if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            return redirect('/')
         return redirect('/')
 
     if req.method == "GET":
@@ -204,7 +228,7 @@ def reset_password(req , auth_token):
                 return redirect('/login')
             else:
                 print('no')
-                messages.success(req, 'Something went wrong please try again.')
+                messages.success(req, 'Admin cannot use this functionality please login user account.')
                 return redirect('/forget_password')
         except Exception as e:
             print(e)
@@ -212,7 +236,13 @@ def reset_password(req , auth_token):
 
 
 def category(req, pk):
-
+    if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/')
     ser_obj = Services.objects.filter(pk = pk).first()
     if not ser_obj.sub_category:
         return redirect(f'/service/{ser_obj.id}')
@@ -224,7 +254,13 @@ def category(req, pk):
         
         
 def service(req ,servicepk, categorypk = None):
-
+    if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/')
     ser_obj = Services.objects.filter(pk = servicepk).first()
     if categorypk is None:
         emp_obj = Employee.objects.filter(service = ser_obj.service).all()
@@ -239,6 +275,9 @@ def service(req ,servicepk, categorypk = None):
         user_id = emp.user_id
         user_obj = User.objects.filter(pk = user_id).first()
         profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/login')
         address = profile_obj.address
         Disc={"id":emp.id,"name":emp.name,"image":emp.image,"description":emp.description,"cost":emp.cost,"rating":emp.rating, "address":address}
         emplist.append(Disc)
@@ -261,6 +300,13 @@ def addcart(req , emp_pk ,servicepk, categorypk = None):
 
 @login_required(login_url='/login')
 def cart(req):
+    if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/')
     emplist = []
     user_obj = req.user
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = True  ).all()
@@ -268,6 +314,9 @@ def cart(req):
         data=Employee.objects.filter(pk = emp.emp_id).first() 
         user_obj = User.objects.filter(pk = emp.user_id).first()
         profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/login')
         address = profile_obj.address
         Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id , "address":address}
         emplist.append(Disc)
@@ -276,7 +325,13 @@ def cart(req):
 
 @login_required(login_url='/login')
 def order(req , order_pk = None ,  user_pk = None):
-    
+    if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/')
     user_obj = req.user
     emplist = []
     if user_pk is None:
@@ -294,10 +349,13 @@ def order(req , order_pk = None ,  user_pk = None):
 
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = False ).all()
     for order in choose_obj:
-        # emplist.append(Employee.objects.filter(pk = order.emp_id).first())
+
         data=Employee.objects.filter(pk = order.emp_id).first() 
         user_obj = User.objects.filter(pk = order.user_id).first()
         profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/login')
         address = profile_obj.address
         Disc={"id":data.id,"name":data.name,"image":data.image,"description":data.description,"cost":data.cost,"rating":data.rating, "address":address}
         emplist.append(Disc)
@@ -329,6 +387,13 @@ def remove(req , order_pk):
 @login_required(login_url='/login')
 def add_emp(req , servicepk , categorypk = None):
 
+    if req.user.is_authenticated:
+        user_obj = req.user
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        if profile_obj is None:
+            auth.logout(req)
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/')
     # get request
     if req.method == "GET":
         return render(req, "user/add_employee.html")
@@ -380,7 +445,7 @@ def checkout(req , order_pk = None , user_pk = None ):
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:
-        messages.success(req, 'Somethig went wrong try again.')
+        messages.success(req, 'Admin cannot use this functionality please login user account.')
         return redirect('/login')
 
 
@@ -412,7 +477,7 @@ def profile(req):
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:
-        messages.success(req, 'Somethig went wrong try again.')
-        return redirect('/login')
+            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            return redirect('/login')
 
     return render(req, 'user/profile.html' , {'profile':profile_obj})
