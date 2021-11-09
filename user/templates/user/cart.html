@@ -2,6 +2,11 @@
 {% block content %}
 {% load static %}
 
+{% if present == 0 %}
+    <h2>No cart available</h2>
+
+{% else %}
+
 <div class="card">
         <div class="card-block" >
             <div class="row">
@@ -13,7 +18,8 @@
                     <h2> Price : {{employee.cost}} Rs.</h2>
                     <h2> Rating : {{employee.rating}} / 5</h2>
                     <h2> Description : {{employee.desc}}</h2>
-                    <button type="button" class="btn btn-primary"> <a href = "{% url 'order' order_pk=employee.dataID %}" style = "text-decoration: none; color:red" >Order</a> </button>
+                    <h2> address : {{employee.address}}</h2>
+                    <button type="button" class="btn btn-primary"> <a href = "{% url 'checkout' order_pk=employee.dataID %}" style = "text-decoration: none; color:red" >Order</a> </button>
                     <button type="button" class="btn btn-primary"> <a href = "{% url 'remove' order_pk=employee.dataID %}" style = "text-decoration: none; color:red" >Remove</a> </button>
                     <br><br>
                 {% endfor %}
@@ -21,6 +27,9 @@
         </div>
 </div>
 
+<button type="button" class="btn btn-primary"> <a href = "{% url 'checkout' order_pk=1 user_pk=user_id %}" style = "text-decoration: none; color:red" >Order All</a> </button>
+
+{% endif %}
 
 
 

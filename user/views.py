@@ -232,12 +232,18 @@ def service(req ,servicepk, categorypk = None):
     else:
         cat_obj = Categorys.objects.filter(pk = categorypk).first()
         emp_obj = Employee.objects.filter(category = cat_obj.category).all()
-        for i in emp_obj:
-            print(i)
-        print(cat_obj.category)
         cat = cat_obj.category
-    
-    return render(req , 'user/service.html' , {'emp_presint': len(emp_obj) ,'cat': cat,  'employees' : emp_obj , 'servicepk':servicepk , 'categorypk' : categorypk})
+    print(emp_obj[0])
+
+    emplist = []
+    user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    address = profile_obj.address
+    for emp in emp_obj:
+        Disc={"id":emp.id,"name":emp.name,"image":emp.image,"description":emp.description,"cost":emp.cost,"rating":emp.rating, "address":address}
+        emplist.append(Disc)
+
+    return render(req , 'user/service.html' , {'emp_present': len(emp_obj) ,'cat': cat,  'employees' : emplist , 'servicepk':servicepk , 'categorypk' : categorypk})
 
 
 @login_required(login_url='/login')
@@ -249,7 +255,7 @@ def addcart(req , emp_pk ,servicepk, categorypk = None):
     if categorypk is None:
         return redirect(f'/service/{servicepk}')
     else:
-        return redirect(f'/service/{servicepk}/{servicepk}')
+        return redirect(f'/service/{servicepk}/{categorypk}')
         
 
 
@@ -260,27 +266,43 @@ def cart(req):
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = True  ).all()
     for emp in choose_obj:
         data=Employee.objects.filter(pk = emp.emp_id).first() 
-        Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id}
+        user_obj = User.objects.filter(pk = emp.user_id).first()
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        address = profile_obj.address
+        Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id , "address":address}
         emplist.append(Disc)
-    
-    return render(req , 'user/cart.html' , {'employees' : emplist })
+    return render(req , 'user/cart.html' , { 'present': len(emplist) ,  'employees' : emplist , 'user_id' : user_obj.id})
 
 
 @login_required(login_url='/login')
-def order(req , order_pk = None):
+def order(req , order_pk = None ,  user_pk = None):
     
     user_obj = req.user
     emplist = []
-    if not order_pk is None:
-        choose_obj = Choose.objects.filter(pk = order_pk ).first()
-        choose_obj.cart = False
-        choose_obj.save()
+    if user_pk is None:
+        if not order_pk is None:
+            choose_obj = Choose.objects.filter(pk = order_pk ).first()
+            choose_obj.cart = False
+            choose_obj.save()
+            messages.success(req, 'Your order is succesfully done .')
+    else:
+        choose_obj = Choose.objects.filter(user_id = user_pk ).all()
+        for obj in choose_obj:
+            obj.cart = False
+            obj.save()
         messages.success(req, 'Your order is succesfully done .')
 
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = False ).all()
-    for emp in choose_obj:
-        emplist.append(Employee.objects.filter(pk = emp.emp_id).first())
-    return render(req , 'user/order.html' , {'employees' : emplist} )
+    for order in choose_obj:
+        # emplist.append(Employee.objects.filter(pk = order.emp_id).first())
+        data=Employee.objects.filter(pk = order.emp_id).first() 
+        user_obj = User.objects.filter(pk = order.user_id).first()
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        address = profile_obj.address
+        Disc={"id":data.id,"name":data.name,"image":data.image,"description":data.description,"cost":data.cost,"rating":data.rating, "address":address}
+        emplist.append(Disc)
+    return render(req , 'user/order.html' , {'present': len(emplist) , 'employees' : emplist} )
+
 
 @login_required(login_url='/login')
 def remove(req , order_pk):
@@ -299,7 +321,7 @@ def remove(req , order_pk):
         Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id}
         emplist.append(Disc)
 
-    return render(req , 'user/cart.html' , {'employees' : emplist })
+    return render(req , 'user/cart.html' , {'present': len(emplist) , 'employees' : emplist , 'user_id' : user_obj.id})
 
 
 
@@ -351,3 +373,46 @@ def add_emp(req , servicepk , categorypk = None):
             # redirect to service.html
             return redirect(f"/service/{servicepk}/{categorypk}")
         
+
+# checkout.html page
+def checkout(req , order_pk = None , user_pk = None ):
+    cost = 0
+    user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    if profile_obj is None:
+        messages.success(req, 'Somethig went wrong try again.')
+        return redirect('/login')
+
+
+    if req.method == "POST":
+        address = req.POST.get('address')
+        profile_obj.address = address
+        messages.success(req, 'Address succesfully changed.')
+        profile_obj.save()
+
+
+    # if user select individual cart
+    if user_pk is None:
+        choose_obj = Choose.objects.filter(pk = order_pk ).first()
+        emp_obj = Employee.objects.filter(pk = choose_obj.emp_id ).first()
+        cost = emp_obj.cost
+        return render(req, 'user/checkout.html' , {'cost':cost , 'order_pk':order_pk , 'address': profile_obj.address})
+
+    # if user select order all
+    else:
+        choose_obj = Choose.objects.filter(user_id = user_pk , cart=True).all()
+        for obj in choose_obj:
+            # add cost of all the cart 
+            emp_obj = Employee.objects.filter(pk = obj.emp_id ).first()
+            cost = cost + emp_obj.cost
+        return render(req, 'user/checkout.html' , {'cost':cost , 'user_pk':user_pk , 'address': profile_obj.address})
+
+
+def profile(req):
+    user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    if profile_obj is None:
+        messages.success(req, 'Somethig went wrong try again.')
+        return redirect('/login')
+
+    return render(req, 'user/profile.html' , {'profile':profile_obj})

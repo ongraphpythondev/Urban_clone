@@ -2,7 +2,10 @@
 {% block content %}
 {% load static %}
 
+{% if present == 0 %}
+    <h2>No order history</h2>
 
+{% else %}
 <div class="card">
         <div class="card-block" >
             <div class="row">
@@ -14,11 +17,13 @@
                     <h2> Price : {{employee.cost}} Rs.</h2>
                     <h2> Rating : {{employee.rating}} / 5</h2>
                     <h2> Description : {{employee.description}}</h2>
+                    <h2> Address : {{employee.address}}</h2>
                     <br><br>
                 {% endfor %}
             </div>
         </div>
 </div>
+{% endif %}
 
 
 
