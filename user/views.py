@@ -235,10 +235,11 @@ def service(req ,servicepk, categorypk = None):
         cat = cat_obj.category
 
     emplist = []
-    user_obj = req.user
-    profile_obj = Profile.objects.filter(user = user_obj).first()
-    address = profile_obj.address
     for emp in emp_obj:
+        user_id = emp.user_id
+        user_obj = User.objects.filter(pk = user_id).first()
+        profile_obj = Profile.objects.filter(user = user_obj).first()
+        address = profile_obj.address
         Disc={"id":emp.id,"name":emp.name,"image":emp.image,"description":emp.description,"cost":emp.cost,"rating":emp.rating, "address":address}
         emplist.append(Disc)
 
