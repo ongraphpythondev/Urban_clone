@@ -440,6 +440,7 @@ def add_emp(req , servicepk , categorypk = None):
         
 
 # checkout.html page
+@login_required(login_url='/login')
 def checkout(req , order_pk = None , user_pk = None ):
     cost = 0
     user_obj = req.user
