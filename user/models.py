@@ -54,6 +54,7 @@ class Employee(models.Model):
     cost = models.IntegerField(default = 0)
     rating = models.FloatField(default = 4.2)
     description = models.TextField(default = None)
+    address = models.TextField(blank = True , default = None)
     image = models.FileField(upload_to = 'user/static/user/image')
 
 

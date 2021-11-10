@@ -272,15 +272,11 @@ def service(req ,servicepk, categorypk = None):
 
     emplist = []
     for emp in emp_obj:
-        user_id = emp.user_id
-        user_obj = User.objects.filter(pk = user_id).first()
-        profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
             messages.success(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
-        address = profile_obj.address
-        Disc={"id":emp.id,"name":emp.name,"image":emp.image,"description":emp.description,"cost":emp.cost,"rating":emp.rating, "address":address}
-        emplist.append(Disc)
+        emp_data = Employee.objects.filter(pk = emp.id).first()
+        emplist.append(emp_data)
 
     return render(req , 'user/service.html' , {'emp_present': len(emp_obj) ,'cat': cat,  'employees' : emplist , 'servicepk':servicepk , 'categorypk' : categorypk})
 
@@ -317,8 +313,7 @@ def cart(req):
         if profile_obj is None:
             messages.success(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
-        address = profile_obj.address
-        Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id , "address":address}
+        Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id , "address":data.address}
         emplist.append(Disc)
     return render(req , 'user/cart.html' , { 'present': len(emplist) ,  'employees' : emplist , 'user_id' : user_obj.id})
 
@@ -349,16 +344,14 @@ def order(req , order_pk = None ,  user_pk = None):
 
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = False ).all()
     for order in choose_obj:
-
+        
         data=Employee.objects.filter(pk = order.emp_id).first() 
         user_obj = User.objects.filter(pk = order.user_id).first()
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
             messages.success(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
-        address = profile_obj.address
-        Disc={"id":data.id,"name":data.name,"image":data.image,"description":data.description,"cost":data.cost,"rating":data.rating, "address":address}
-        emplist.append(Disc)
+        emplist.append(data)
     return render(req , 'user/order.html' , {'present': len(emplist) , 'employees' : emplist} )
 
 
@@ -402,7 +395,8 @@ def add_emp(req , servicepk , categorypk = None):
         
         cost = req.POST.get('cost')
         description = req.POST.get('description')
-
+        address = req.POST.get('address')
+        print(address)
         # condition if file is not uploaded
         if len(req.FILES) != 0:
             image = req.FILES['image']
@@ -410,7 +404,8 @@ def add_emp(req , servicepk , categorypk = None):
             messages.success(req, 'please fill your fields')
             return render(req, 'user/add_employee.html')
 
-        if len(cost) == 0 or len(description) == 0:
+        if len(cost) == 0 or len(description) == 0 or len(address) == 0:
+            
             messages.success(req, 'please fill your fields')
             return render(req, 'user/add_employee.html')
 
@@ -424,7 +419,7 @@ def add_emp(req , servicepk , categorypk = None):
         # if there is no category only service
         if categorypk is None:
             
-            emp_obj = Employee.objects.create(user_id=user_id , service= ser_obj.service ,name=name,category='None',cost=cost,description=description,image=image)
+            emp_obj = Employee.objects.create(user_id=user_id , service= ser_obj.service ,name=name,category='None',cost=cost,description=description,address=address,image=image)
             emp_obj.save()
             
             # redirect to service.html
@@ -432,7 +427,7 @@ def add_emp(req , servicepk , categorypk = None):
 
         else:
             cat_obj = Categorys.objects.filter(pk = categorypk).first()
-            emp_obj = Employee.objects.create(user_id=user_id,service= ser_obj.service ,name=name,category=cat_obj.category,cost=cost,description=description,image=image)
+            emp_obj = Employee.objects.create(user_id=user_id,service= ser_obj.service ,name=name,category=cat_obj.category,cost=cost,description=description,address=address,image=image)
             emp_obj.save()
             
             # redirect to service.html
