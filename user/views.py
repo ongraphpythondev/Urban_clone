@@ -25,6 +25,7 @@ def login(req):
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
             auth.logout(req)
+            messages.error(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/')
         return redirect('/')
 
@@ -240,9 +241,7 @@ def category(req, pk):
         user_obj = req.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
-            auth.logout(req)
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
-            return redirect('/')
+            return redirect('/login')
     ser_obj = Services.objects.filter(pk = pk).first()
     if not ser_obj.sub_category:
         return redirect(f'/service/{ser_obj.id}')
@@ -254,13 +253,12 @@ def category(req, pk):
         
         
 def service(req ,servicepk, categorypk = None):
+
     if req.user.is_authenticated:
         user_obj = req.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
-            auth.logout(req)
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
-            return redirect('/')
+            return redirect('/login')
     ser_obj = Services.objects.filter(pk = servicepk).first()
     if categorypk is None:
         emp_obj = Employee.objects.filter(service = ser_obj.service).all()
@@ -272,9 +270,6 @@ def service(req ,servicepk, categorypk = None):
 
     emplist = []
     for emp in emp_obj:
-        if profile_obj is None:
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
-            return redirect('/login')
         emp_data = Employee.objects.filter(pk = emp.id).first()
         emplist.append(emp_data)
 
@@ -284,6 +279,9 @@ def service(req ,servicepk, categorypk = None):
 @login_required(login_url='/login')
 def addcart(req , emp_pk ,servicepk, categorypk = None):
     user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    if profile_obj is None:
+        return redirect('/login')
     choose_obj = Choose.objects.create(user_id = user_obj.id , emp_id= emp_pk , cart = True , )
     choose_obj.save()
     messages.success(req, 'Your service is added to cart .')
@@ -313,7 +311,7 @@ def cart(req):
         if profile_obj is None:
             messages.success(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
-        Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id , "address":data.address}
+        Disc={"name":data.name,"image":data.image,"description":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id , "address":data.address}
         emplist.append(Disc)
     return render(req , 'user/cart.html' , { 'present': len(emplist) ,  'employees' : emplist , 'user_id' : user_obj.id})
 
@@ -324,9 +322,7 @@ def order(req , order_pk = None ,  user_pk = None):
         user_obj = req.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
-            auth.logout(req)
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
-            return redirect('/')
+            return redirect('/login')
     user_obj = req.user
     emplist = []
     if user_pk is None:
@@ -349,7 +345,6 @@ def order(req , order_pk = None ,  user_pk = None):
         user_obj = User.objects.filter(pk = order.user_id).first()
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
         emplist.append(data)
     return render(req , 'user/order.html' , {'present': len(emplist) , 'employees' : emplist} )
@@ -369,7 +364,7 @@ def remove(req , order_pk):
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = True  ).all()
     for emp in choose_obj:
         data=Employee.objects.filter(pk = emp.emp_id).first() 
-        Disc={"Name":data.name,"Img":data.image,"desc":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id}
+        Disc={"name":data.name,"image":data.image,"description":data.description,"cost":data.cost,"rating":data.rating,"dataID":emp.id , "address":data.address}
         emplist.append(Disc)
 
     return render(req , 'user/cart.html' , {'present': len(emplist) , 'employees' : emplist , 'user_id' : user_obj.id})
@@ -384,9 +379,7 @@ def add_emp(req , servicepk , categorypk = None):
         user_obj = req.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
-            auth.logout(req)
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
-            return redirect('/')
+            return redirect('/admin')
     # get request
     if req.method == "GET":
         return render(req, "user/add_employee.html")
@@ -441,7 +434,6 @@ def checkout(req , order_pk = None , user_pk = None ):
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:
-        messages.success(req, 'Admin cannot use this functionality please login user account.')
         return redirect('/login')
 
 
@@ -474,7 +466,6 @@ def profile(req):
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:
-        messages.success(req, 'Admin cannot use this functionality please login user account.')
         return redirect('/login')
 
     return render(req, 'user/profile.html' , {'profile':profile_obj})

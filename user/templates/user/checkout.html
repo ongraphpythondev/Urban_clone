@@ -12,38 +12,33 @@
     </head>
     <body>
         <br>
-        <div class="container center_div">
+        <div class="container center_div" >
         
-        <h3  >Your total cost is {{cost}} Rs.</h3>
-        <h3  >Your Address is {{address}} </h3><br>
-        {% if user_pk %}
-            <button type="button" class="btn btn-primary"> <a href = "{% url 'order' order_pk=1 user_pk=user_pk  %}" style = "text-decoration: none; color:red" >Pay </a> </button>
-        {% else %}
-            <button type="button" class="btn btn-primary"> <a href = "{% url 'order' order_pk=order_pk %}" style = "text-decoration: none; color:red" >Pay</a> </button>
+            <h3  >Your total cost is {{cost}} Rs.</h3>
+            <h3  >Your Address is {{address}} </h3><br>
+            {% if user_pk %}
+                <button type="button" class="btn btn-primary"> <a href = "{% url 'order' order_pk=1 user_pk=user_pk  %}" style = "text-decoration: none; color:white" >Pay </a> </button>
+            {% else %}
+                <button type="button" class="btn btn-primary"> <a href = "{% url 'order' order_pk=order_pk %}" style = "text-decoration: none; color:white" >Pay</a> </button>
 
-        {%endif%}
-
-
-        <br><br>
-        <h3  >If you want to change address</h3>
-        <form method = "post">
-        
-            {% csrf_token %}
-            <div class="form-group " >
-                <label for="exampleInputEmail1" >Address</label>
-                <input type="text" class="form-control" name="address" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter address">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your address with anyone else.</small>
-            </div>
-            <br>
-            <button type="submit" style = "text-decoration: none; color:red"  class="btn btn-primary">Change</button>
-        </form>
+            {%endif%}
 
 
-
-
+            <br><br>
+            <h3  >If you want to change address</h3>
+            <form method = "post">
+            
+                {% csrf_token %}
+                <div class="form-group " >
+                    <label for="exampleInputEmail1" >Address</label>
+                    <input type="text" class="form-control" name="address" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter address">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your address with anyone else.</small>
+                </div>
+                <br>
+                <button type="submit" style = "text-decoration: none; color:white"  class="btn btn-primary">Change</button>
+            </form><br>
         </div>
 
-    </div>
 
     </body>
 

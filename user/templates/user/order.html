@@ -6,23 +6,25 @@
     <h2>No order history</h2>
 
 {% else %}
-<div class="card">
-        <div class="card-block" >
-            <div class="row">
+            <div class="card-group">
                 {% for employee in employees %}
-                    <div>
-                    <img class="card-img-top" src = "{% static employee.image %}" style="width: 20%; height:10vw;" alt="Card image cap">    
-                    <div>
-                    <h2> Name : {{employee.name}}</h2>
-                    <h2> Price : {{employee.cost}} Rs.</h2>
-                    <h2> Rating : {{employee.rating}} / 5</h2>
-                    <h2> Description : {{employee.description}}</h2>
-                    <h2> Address : {{employee.address}}</h2>
-                    <br><br>
+                <div class="col" >
+                    <div class="card" style="width: 20rem; background-color:#dee2e6;">
+                        
+                        <img class="card-img-top" style="margin-left: auto;margin-right: auto; width:10vw; height: 20vh"src = "{% static employee.image %}" style="width: 20%; height:10vw;" alt="Card image cap">    
+                        
+                        <div class="card-body">
+                            <h2> Name : {{employee.name}}</h2>
+                            <h2> Price : {{employee.cost}} Rs.</h2>
+                            <h2> Rating : {{employee.rating}} / 5</h2>
+                            <h2> Description : {{employee.description}}</h2>
+                            <h2> Address : {{employee.address}}</h2>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
             </div>
-        </div>
-</div>
+        
 {% endif %}
 
 
