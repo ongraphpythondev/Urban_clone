@@ -1,0 +1,41 @@
+{% extends 'user/base.html' %}
+{% block content %}
+{% load static %}
+
+{% if present == 0 %}
+    <h2>No Notification</h2>
+
+{% else %}
+            <div class="card-group">
+                {% for user in users %}
+                <div class="col" >
+                    <div class="card" style="width: 20rem; background-color:#dee2e6;">
+                        
+                        <div class="card-body">
+                            <h4> Name : {{user.name}}</h4>
+                            <h4> Address : {{user.address}}</h4>
+                            <h4> Service : {{user.service}}</h4>
+                            {% if not user.category == "None" %}
+                                <h4> Category : {{user.category}}</h4>
+                            {% endif %}
+                            <h4> Price : {{user.cost}} Rs.</h4>
+                            <h4> Status : {{user.status}}</h4>
+                        </div>
+                        {% if user.status == "Not replied" %}
+                            <span>
+                            <a href = "{% url 'decline' order_pk=user.orderid%}" style = " text-decoration: none; color:white" ><button type="button" class="btn btn-primary" style="width:40% ; background-color:#f54336;">Decline</button></a> 
+                            
+                            <a href = "{% url 'accept' order_pk=user.orderid%}" style = "text-decoration: none;   color:white" ><button type="button" class="btn btn-primary" style="width:40% ; background-color:#02d300;">Accept</button></a> 
+                            <span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+            </div>
+        
+{% endif %}
+
+
+
+{% endblock %}

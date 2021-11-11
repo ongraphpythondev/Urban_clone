@@ -31,20 +31,6 @@ class Categorys(models.Model):
     def __str__(self):
         return self.category
 
-def path_and_rename(path):
-    def path_and_rename_func(instance, filename):
-        upload_to = path
-        ext = filename.split('.')[-1]
-        # get filename
-        if instance.pk:
-            filename = '{}.{}'.format(instance.pk, ext)
-        else:
-            # set filename as random string
-            filename = '{}.{}'.format(uuid4().hex, ext)
-        # return the whole path to the file
-        
-        return os.path.join(upload_to, filename)
-    return path_and_rename_func
 
 class Employee(models.Model):
     user_id = models.CharField(max_length=100 , default=None)
@@ -68,6 +54,8 @@ class Choose(models.Model):
     user_id = models.CharField(max_length=100 )
     emp_id = models.CharField(max_length=100 )
     cart = models.BooleanField(default=True)
+    address = models.TextField(blank = True , default = None)
+    status = models.TextField(blank = True , default = "Not replied")
     order_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

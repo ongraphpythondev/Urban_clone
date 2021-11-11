@@ -24,4 +24,9 @@ urlpatterns = [
     path('checkout/<int:order_pk>' , views.checkout , name = 'checkout'),
     path('checkout/<int:order_pk>/<int:user_pk>' , views.checkout , name = 'checkout'),
     path('profile' , views.profile , name = 'profile'),
+    path('cancel_order/<int:order_pk>' , views.cancel_order , name = 'cancel_order'),
+    path('notification' , views.notification , name = 'notification'),
+    path('decline/<int:order_pk>' , views.decline , name = 'decline'),
+    path('accept/<int:order_pk>' , views.accept , name = 'accept'),
+    
 ]

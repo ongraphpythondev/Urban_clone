@@ -8,6 +8,7 @@ import uuid
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
+import random
 
 
 # Create your views here.
@@ -278,11 +279,14 @@ def service(req ,servicepk, categorypk = None):
 
 @login_required(login_url='/login')
 def addcart(req , emp_pk ,servicepk, categorypk = None):
+
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:
         return redirect('/login')
-    choose_obj = Choose.objects.create(user_id = user_obj.id , emp_id= emp_pk , cart = True , )
+
+    address = profile_obj.address
+    choose_obj = Choose.objects.create(user_id = user_obj.id , emp_id= emp_pk , cart = True , address=address)
     choose_obj.save()
     messages.success(req, 'Your service is added to cart .')
     if categorypk is None:
@@ -323,6 +327,8 @@ def order(req , order_pk = None ,  user_pk = None):
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
             return redirect('/login')
+    
+
     user_obj = req.user
     emplist = []
     if user_pk is None:
@@ -331,12 +337,14 @@ def order(req , order_pk = None ,  user_pk = None):
             choose_obj.cart = False
             choose_obj.save()
             messages.success(req, 'Your order is succesfully done .')
+            return redirect('/order')
     else:
         choose_obj = Choose.objects.filter(user_id = user_pk ).all()
         for obj in choose_obj:
             obj.cart = False
             obj.save()
-        messages.success(req, 'Your order is succesfully done .')
+        messages.success(req, 'Your order is succesfully done .')   
+        return redirect('/order')
 
     choose_obj = Choose.objects.filter(user_id = user_obj.id , cart = False ).all()
     for order in choose_obj:
@@ -346,8 +354,9 @@ def order(req , order_pk = None ,  user_pk = None):
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
             return redirect('/login')
-        emplist.append(data)
-    return render(req , 'user/order.html' , {'present': len(emplist) , 'employees' : emplist} )
+        Disc={"name":data.name,"image":data.image,"description":data.description,"cost":data.cost,"rating":data.rating,"address":data.address,"location":order.address,"status":order.status,"orderid":order.id}
+        emplist.append(Disc)
+    return render(req , 'user/order.html' , {'present': len(emplist) , 'employees' : emplist } )
 
 
 @login_required(login_url='/login')
@@ -406,13 +415,14 @@ def add_emp(req , servicepk , categorypk = None):
         user_id = user_obj.id
         name = user_obj.username
         
+        rating = round(random.uniform(3.0,4.8))
         # getting object of service class
         ser_obj = Services.objects.filter(pk = servicepk).first()
 
         # if there is no category only service
         if categorypk is None:
             
-            emp_obj = Employee.objects.create(user_id=user_id , service= ser_obj.service ,name=name,category='None',cost=cost,description=description,address=address,image=image)
+            emp_obj = Employee.objects.create(user_id=user_id , service= ser_obj.service ,name=name,category='None',cost=cost,rating=rating,description=description,address=address,image=image)
             emp_obj.save()
             
             # redirect to service.html
@@ -420,7 +430,7 @@ def add_emp(req , servicepk , categorypk = None):
 
         else:
             cat_obj = Categorys.objects.filter(pk = categorypk).first()
-            emp_obj = Employee.objects.create(user_id=user_id,service= ser_obj.service ,name=name,category=cat_obj.category,cost=cost,description=description,address=address,image=image)
+            emp_obj = Employee.objects.create(user_id=user_id,service= ser_obj.service ,name=name,category=cat_obj.category,cost=cost,rating=rating,description=description,address=address,image=image)
             emp_obj.save()
             
             # redirect to service.html
@@ -447,6 +457,8 @@ def checkout(req , order_pk = None , user_pk = None ):
     # if user select individual cart
     if user_pk is None:
         choose_obj = Choose.objects.filter(pk = order_pk ).first()
+        choose_obj.address = profile_obj.address
+        choose_obj.save()
         emp_obj = Employee.objects.filter(pk = choose_obj.emp_id ).first()
         cost = emp_obj.cost
         return render(req, 'user/checkout.html' , {'cost':cost , 'order_pk':order_pk , 'address': profile_obj.address})
@@ -456,6 +468,7 @@ def checkout(req , order_pk = None , user_pk = None ):
         choose_obj = Choose.objects.filter(user_id = user_pk , cart=True).all()
         for obj in choose_obj:
             # add cost of all the cart 
+            obj.address = profile_obj.address
             emp_obj = Employee.objects.filter(pk = obj.emp_id ).first()
             cost = cost + emp_obj.cost
         return render(req, 'user/checkout.html' , {'cost':cost , 'user_pk':user_pk , 'address': profile_obj.address})
@@ -469,3 +482,74 @@ def profile(req):
         return redirect('/login')
 
     return render(req, 'user/profile.html' , {'profile':profile_obj})
+
+
+# it used in while anyone cancle there order
+@login_required(login_url='/login')
+def cancel_order(req , order_pk):
+    user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    if profile_obj is None:
+        return redirect('/login')
+
+    # it change status in database 
+    choose_obj = Choose.objects.filter(pk = order_pk).first()
+    choose_obj.status = "Canceled"
+    messages.success(req, 'Cancel order succesful.')
+    choose_obj.save()
+
+    return redirect('/order')
+
+@login_required(login_url='/login')
+def notification(req ):
+    user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    if profile_obj is None:
+        return redirect('/login')
+
+    emp_obj = Employee.objects.filter(user_id = user_obj.id).all()
+    userlist = []
+    for emp in emp_obj:
+        order_obj = Choose.objects.filter(emp_id=emp.id).all()
+        for order in order_obj:
+
+            user_id = order.user_id
+            user_obj = User.objects.filter(pk = user_id).first()
+            name = user_obj.username
+
+            Disc={"name":name,"cost":emp.cost,"category":emp.category,"service":emp.service,"address":order.address,"status":order.status,"orderid":order.id}
+            userlist.append(Disc)
+            
+
+    return render(req , 'user/notification.html' , {"present":len(userlist),"users":userlist})
+
+
+@login_required(login_url='/login')
+def decline(req , order_pk):
+    user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    if profile_obj is None:
+        return redirect('/login')
+
+    
+    order_obj = Choose.objects.filter(pk=order_pk).first()
+    order_obj.status = "Canceled"
+    order_obj.save()
+
+    return redirect("/notification")
+
+
+@login_required(login_url='/login')
+def accept(req , order_pk):
+    user_obj = req.user
+    profile_obj = Profile.objects.filter(user = user_obj).first()
+    if profile_obj is None:
+        return redirect('/login')
+
+    
+    order_obj = Choose.objects.filter(pk=order_pk).first()
+    order_obj.status = "Approved"
+    order_obj.save()
+
+    return redirect("/notification")
+
