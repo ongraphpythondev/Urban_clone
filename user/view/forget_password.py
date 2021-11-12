@@ -51,7 +51,7 @@ def forget_password(req ):
 
 def send_mail_for_reset_password(email , token):
     subject = 'Your accounts need to reset password'
-    message = f'Hi paste the link to reset the password http://127.0.0.1:8000/reset_password/{token}'
+    message = f'Hi paste the link to reset the password http://localhost:8000/reset_password/{token}'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
     send_mail(subject, message , email_from ,recipient_list )
