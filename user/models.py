@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 import time
 import os
 from uuid import uuid4
@@ -56,7 +57,7 @@ class Choose(models.Model):
     cart = models.BooleanField(default=True)
     address = models.TextField(blank = True , default = None)
     status = models.TextField(blank = True , default = "Not replied")
-    order_date = models.DateTimeField(auto_now_add=True)
+    order_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.user_id
