@@ -11,12 +11,13 @@ from django.contrib.auth.decorators import login_required
 # register page
 def register(request):
     
+    # it check user login with admin account 
     if request.user.is_authenticated:
         user_obj = request.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
         if profile_obj is None:
             auth.logout(request)
-            return redirect('/')
+            return redirect('/login')
         return redirect('/')
 
 
@@ -29,6 +30,7 @@ def register(request):
         password = request.POST.get('password')
         address = request.POST.get('address')
 
+        # checking all data
         if not username:
             messages.error(request, 'Please fill username.')
             return render(request, "user/register.html")

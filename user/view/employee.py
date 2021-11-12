@@ -10,6 +10,7 @@ import random
 @login_required(login_url='/login')
 def add_emp(req , servicepk , categorypk = None):
 
+    # it check user login with admin account 
     if req.user.is_authenticated:
         user_obj = req.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
@@ -24,7 +25,6 @@ def add_emp(req , servicepk , categorypk = None):
         cost = req.POST.get('cost')
         description = req.POST.get('description')
         address = req.POST.get('address')
-        print(address)
         # condition if file is not uploaded
         if len(req.FILES) != 0:
             image = req.FILES['image']
@@ -32,7 +32,7 @@ def add_emp(req , servicepk , categorypk = None):
             messages.error(req, 'Please add image')
             return render(req, 'user/add_employee.html')
 
-
+        # checking data
         if len(cost) == 0 or len(description) == 0 or len(address) == 0:
             messages.error(req, 'please fill your fields')
             return render(req, 'user/add_employee.html')
@@ -44,11 +44,14 @@ def add_emp(req , servicepk , categorypk = None):
             return render(req, 'user/add_employee.html')
 
 
+        # taking user object who is login
         user_obj = req.user
         user_id = user_obj.id
         name = user_obj.username
         
+        # getting random no.
         rating = round(random.uniform(3.0,4.8))
+        
         # getting object of service class
         ser_obj = Services.objects.filter(pk = servicepk).first()
 

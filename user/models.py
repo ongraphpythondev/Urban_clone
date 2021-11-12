@@ -6,7 +6,7 @@ import os
 from uuid import uuid4
 
 
-
+# it store data of user and authentication data
 class Profile(models.Model):
     user = models.OneToOneField(User , on_delete=models.CASCADE)
     auth_token = models.CharField(max_length=100 )
@@ -18,6 +18,7 @@ class Profile(models.Model):
         return self.user.username
 
 
+# it contain service name and is there is sub category or not
 class Services(models.Model):
     service = models.CharField(max_length=100 )
     sub_category = models.BooleanField(default=False)
@@ -25,6 +26,7 @@ class Services(models.Model):
     def __str__(self):
         return self.service
 
+# it store category and there respective service
 class Categorys(models.Model):
     service = models.CharField(max_length=100 )
     category = models.CharField(max_length=100 )
@@ -32,7 +34,7 @@ class Categorys(models.Model):
     def __str__(self):
         return self.category
 
-
+# it store data of employee 
 class Employee(models.Model):
     user_id = models.CharField(max_length=100 , default=None)
     service = models.CharField(max_length=100 )
@@ -47,10 +49,9 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.name
-    
 
 
-
+# it store data when someone cart or order
 class Choose(models.Model):
     user_id = models.CharField(max_length=100 )
     emp_id = models.CharField(max_length=100 )

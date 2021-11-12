@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/login')
 def profile(req):
+    
+    # it check user login with admin account 
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:

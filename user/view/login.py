@@ -5,6 +5,7 @@ from user.models import Profile , Services , Categorys , Employee , Choose
 
 def login(req):
 
+    # it check user login with admin account 
     if req.user.is_authenticated:
         user_obj = req.user
         profile_obj = Profile.objects.filter(user = user_obj).first()
@@ -16,10 +17,12 @@ def login(req):
 
     if req.method == "GET":
         return render(req, "user/login.html")
+
     elif req.method == "POST":
         username = req.POST['username']
         password = req.POST['password']
 
+        # checking data
         if not username:
             messages.error(req, 'Please fill username.')
             return render(req, "user/login.html")

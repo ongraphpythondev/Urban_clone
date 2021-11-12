@@ -11,6 +11,7 @@ def checkout(req , order_pk = None , user_pk = None ):
     cost = 0
     user_obj = req.user
     profile_obj = Profile.objects.filter(user = user_obj).first()
+    # it check user login with admin account 
     if profile_obj is None:
         return redirect('/login')
 
@@ -18,7 +19,10 @@ def checkout(req , order_pk = None , user_pk = None ):
     if req.method == "POST":
         address = req.POST.get('address')
 
+        # if user_pk is not none means user user order all operation other wise user use order individullay
         if user_pk is None:
+            
+            # checking data
             if not address:
                 messages.error(req, "Please enter address")
                 return redirect(f"/checkout/{order_pk}")
@@ -39,23 +43,25 @@ def checkout(req , order_pk = None , user_pk = None ):
         profile_obj.save()
 
 
-    # if user select individual cart
+    # if user_pk is not none means user user order all operation other wise user use order individullay
     if user_pk is None:
         choose_obj = Choose.objects.filter(pk = order_pk ).first()
+        # update address
         choose_obj.address = profile_obj.address
         choose_obj.save()
         emp_obj = Employee.objects.filter(pk = choose_obj.emp_id ).first()
         cost = emp_obj.cost
         return render(req, 'user/checkout.html' , {'cost':cost , 'order_pk':order_pk , 'address': profile_obj.address})
 
-    # if user select order all
+    
     else:
         choose_obj = Choose.objects.filter(user_id = user_pk , cart=True).all().order_by("-order_date")
         for obj in choose_obj:
-            # add cost of all the cart 
+            # update address
             obj.address = profile_obj.address
             obj.save()
             emp_obj = Employee.objects.filter(pk = obj.emp_id ).first()
+            # add cost of all the cart 
             cost = cost + emp_obj.cost
         return render(req, 'user/checkout.html' , {'cost':cost , 'user_pk':user_pk , 'address': profile_obj.address})
 

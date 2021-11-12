@@ -1,7 +1,6 @@
 from django.shortcuts import render , redirect
 from user.models import Services 
 
-# Create your views here.
 
 # home page
 def home(req):
