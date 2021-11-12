@@ -30,11 +30,15 @@
                             <h4> Rating : {{employee.rating}} / 5</h4>
                             <h4> Description : {{employee.description}}</h4>
                             <h4> Address : {{employee.address}}</h4>
-                            {% if categorypk %}
-                                <button type="button" class="btn btn-primary"> <a href = "{% url 'addcart' emp_pk=employee.id servicepk=servicepk categorypk=categorypk %}" style = "text-decoration: none; color:white" >Add to cart</a> </button>
+                            {% if employee.gotocart %}
+                                <button type="button" class="btn btn-primary"> <a href = "{% url 'cart'%}" style = "text-decoration: none; color:white" >Go to cart</a> </button>
                             {% else %}
-                                <button type="button" class="btn btn-primary"> <a href = "{% url 'addcart' emp_pk=employee.id servicepk=servicepk %}" style = "text-decoration: none; color:white" >Add to cart</a> </button>
-                            {% endif %}
+                                {% if categorypk %}
+                                    <button type="button" class="btn btn-primary"> <a href = "{% url 'addcart' emp_pk=employee.id servicepk=servicepk categorypk=categorypk %}" style = "text-decoration: none; color:white" >Add to cart</a> </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary"> <a href = "{% url 'addcart' emp_pk=employee.id servicepk=servicepk %}" style = "text-decoration: none; color:white" >Add to cart</a> </button>
+                                {% endif %}
+                            {%endif%}
                         </div>
                     </div>
                 </div>

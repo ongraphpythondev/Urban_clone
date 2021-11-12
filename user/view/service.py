@@ -48,8 +48,15 @@ def service(req ,servicepk, categorypk = None):
     emplist = []
     for emp in emp_obj:
         emp_data = Employee.objects.filter(pk = emp.id).first()
-        
-        # it add all data to list
-        emplist.append(emp_data)
+        choose_obj = Choose.objects.filter(emp_id = emp.id, cart=True).first()
+        gotocart = False
+        if choose_obj:
+            gotocart = True
 
-    return render(req , 'user/service.html' , {'emp_present': len(emp_obj) ,'cat': cat,  'employees' : emplist , 'servicepk':servicepk , 'categorypk' : categorypk})
+
+        # it add all data to list
+        Disc={"name":emp_data.name,"image":emp_data.image,"description":emp_data.description,"cost":emp_data.cost,"rating":emp_data.rating , "address":emp_data.address,"id":emp_data.id, "gotocart":gotocart}
+
+        emplist.append(Disc)
+
+    return render(req , 'user/service.html' , {'emp_present': len(emplist) ,'cat': cat,  'employees' : emplist , 'servicepk':servicepk , 'categorypk' : categorypk})

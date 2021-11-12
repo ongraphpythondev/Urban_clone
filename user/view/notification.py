@@ -24,7 +24,9 @@ def notification(req ):
         for order in order_obj:
 
             user_id = order.user_id
+            print(user_id)
             user_obj = User.objects.filter(pk = user_id).first()
+            print(user_obj)
             name = user_obj.username
 
             # it store all data in dictionary

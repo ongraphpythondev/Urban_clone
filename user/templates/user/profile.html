@@ -15,9 +15,11 @@
         <div class="container center_div">
             <h2>Name : {{profile.user.username}}<h2>
             <h2>Email : {{profile.user.email}}<h2>
-            <h2>Address : {{profile.address}}<h2>
+            <h2>Address : {{profile.address}}<h2><br>
+            <button type="button" class="btn btn-primary"> <a href = "{% url 'update'%}" style = "text-decoration: none; color:white" >Update</a> </button>
 
-    </div>
+        </div>
+
 
     </body>
 

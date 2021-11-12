@@ -19,6 +19,7 @@ from user.view.order import cancel_order
 from user.view.notification import notification
 from user.view.notification import decline
 from user.view.notification import accept
+from user.view.update import update
 
 urlpatterns = [
     path('' , views.home , name = 'user'),
@@ -47,5 +48,6 @@ urlpatterns = [
     path('notification' , notification , name = 'notification'),
     path('decline/<int:order_pk>' , decline , name = 'decline'),
     path('accept/<int:order_pk>' , accept , name = 'accept'),
+    path('update' , update , name = 'update'),
     
 ]

@@ -11,5 +11,5 @@ def profile(req):
     profile_obj = Profile.objects.filter(user = user_obj).first()
     if profile_obj is None:
         return redirect('/login')
-
+    
     return render(req, 'user/profile.html' , {'profile':profile_obj})
