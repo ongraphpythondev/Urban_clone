@@ -23,7 +23,7 @@ from user.view.update import update
 
 urlpatterns = [
     path('' , views.home , name = 'user'),
-    path('login' , login , name = 'login'),
+    path('login/' , login , name = 'login'),
     path('register' , register , name = 'register'),
     path('logout' , logout , name = 'logout'),
     path('verify/<auth_token>' , verify , name = 'verify'),
@@ -43,7 +43,7 @@ urlpatterns = [
     path('add_emp/<int:servicepk>' , add_emp , name = 'add_emp'),
     path('checkout/<int:order_pk>' , checkout , name = 'checkout'),
     path('checkout/<int:order_pk>/<int:user_pk>' , checkout , name = 'checkout'),
-    path('profile' , profile , name = 'profile'),
+    path('profile/' , profile , name = 'profile'),
     path('cancel_order/<int:order_pk>' , cancel_order , name = 'cancel_order'),
     path('notification' , notification , name = 'notification'),
     path('decline/<int:order_pk>' , decline , name = 'decline'),
