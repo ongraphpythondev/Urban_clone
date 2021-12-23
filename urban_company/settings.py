@@ -26,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@5=328i)g^%%5i)j%#k9n*1lf#yg((87rg@evvtlf&&02bu%qq'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["urban-app-django.herokuapp.com" , "localhost"]
 
 
 # Application definition
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -129,7 +130,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS=[ 
     os.path.join(BASE_DIR,''),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR,'/')
+# STATIC_ROOT = os.path.join(BASE_DIR,'/')
+STATIC_ROOT = BASE_DIR / 'static'
 
 
 # Default primary key field type
@@ -145,3 +147,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'email' # your email
 EMAIL_HOST_PASSWORD = 'password' # your password
+
+
