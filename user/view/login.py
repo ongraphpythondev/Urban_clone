@@ -6,14 +6,14 @@ from user.models import Profile , Services , Categorys , Employee , Choose
 def login(req):
 
     # it check user login with admin account 
-    if req.user.is_authenticated:
-        user_obj = req.user
-        profile_obj = Profile.objects.filter(user = user_obj).first()
-        if profile_obj is None:
-            auth.logout(req)
-            messages.error(req, 'Admin cannot use this functionality please login user account.')
-            return redirect('/')
-        return redirect('/')
+    # if req.user.is_authenticated:
+    #     user_obj = req.user
+    #     profile_obj = Profile.objects.filter(user = user_obj).first()
+    #     if profile_obj is None:
+    #         auth.logout(req)
+    #         messages.error(req, 'Admin cannot use this functionality please login user account.')
+    #         return redirect('/')
+    #     return redirect('/')
 
     if req.method == "GET":
         return render(req, "user/login.html")

@@ -47,10 +47,12 @@ def forget_password(req ):
             profile_obj.save()
 
             # sending mail
-            send_mail_for_reset_password(email , auth_token)    
-            messages.success(req, 'Email send succesfully check your email.')
+            # send_mail_for_reset_password(email , auth_token)    
+            # messages.success(req, 'Email send succesfully check your email.')
 
-            return render(req, f"user/check_mail_send.html" , {'email':email})
+            # return render(req, f"user/check_mail_send.html" , {'email':email})
+            
+            return redirect(f'/reset_password/{profile_obj.auth_token}')
 
         except Exception as e:
             print(e)

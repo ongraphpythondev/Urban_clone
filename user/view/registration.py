@@ -74,17 +74,18 @@ def register(request):
             profile_obj.save()
             print('this is profile obj')
             # send mail to user for authenticate 
-            send_mail_after_registration(email , auth_token)
-            messages.success(request, 'Email sended to user plese check.')
+            # send_mail_after_registration(email , auth_token)
+            # messages.success(request, 'Email sended to user plese check.')
+            messages.success(request, 'Registration succesful')
             return redirect("/login")
 
         except Exception as e:
             print(e)
 
 # it send email to user with token
-def send_mail_after_registration(email , token):
-    subject = 'Your accounts need to be verified'
-    message = f'Hi paste the link to verify your account http://localhost:8000/verify/{token}'
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = [email]
-    send_mail(subject, message , email_from ,recipient_list )
+# def send_mail_after_registration(email , token):
+#     subject = 'Your accounts need to be verified'
+#     message = f'Hi paste the link to verify your account http://localhost:8000/verify/{token}'
+#     email_from = settings.EMAIL_HOST_USER
+#     recipient_list = [email]
+#     send_mail(subject, message , email_from ,recipient_list )
