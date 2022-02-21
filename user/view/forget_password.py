@@ -83,7 +83,7 @@ def verify(request , auth_token):
             messages.success(request, 'Your account has been verified.')
             return redirect('/login')
         else:
-            messages.success(req, 'Admin cannot use this functionality please login user account.')
+            messages.success(request, 'Admin cannot use this functionality please login user account.')
             return redirect('/login')
     except Exception as e:
         print(e)
