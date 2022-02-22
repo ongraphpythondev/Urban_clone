@@ -1,10 +1,8 @@
 # Urban Clone
-In this POC I clone the urban clap. 
-  1. Registration
-  2. Login
-  3. Profile
+In this POC I clone the urban clap.
+User get autheticated by the gmail when register.
+User can order , add to cart as well as see the profile.
 
-User cannot see Profile without token.
   
 # Prerequisites
 You will need the following programmes properly installed on your computer.<br>
@@ -14,8 +12,8 @@ Python 3.7+
 
 clone the repository
 ```
-git clone https://github.com/ongraphpythondev/Django_REST_jwt.git
-cd Django_REST_jwt
+git clone https://github.com/ongraphpythondev/Urban_clone.git
+cd Urban_clone
 ```
 create a vertual environment
 ```
@@ -35,3 +33,6 @@ python manage.py runserver
   2) user logout<br>
   3) user profile<br>
   3) user registration<br>
+  4) user forget password<br>
+  5) user cart<br>
+  6) user order<br>
